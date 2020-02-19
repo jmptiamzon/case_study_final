@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form'
 import PropTypes from 'prop-types';
 
 class LoginModal extends Component {
@@ -11,24 +12,44 @@ class LoginModal extends Component {
             onHide = { this.props.handleClose }
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
+            backdrop = "static"
             centered
             >
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
-                        Modal heading
+                        HR Login
                     </Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
-                    <h4>Centered Modal</h4>
-                    <p>
-                        Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-                        dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-                        consectetur ac, vestibulum at eros.
-                    </p>
+                    <Form>
+                        <Form.Group controlId="formBasicEmail">
+                            <Form.Label>Email address</Form.Label>
+                            <Form.Control type="email" placeholder="Enter email" name="email" 
+                                onChange = { this.props.onChangeHandler } />
+                            <Form.Text style={{ color: "red", fontWeight: "bold" }}>
+                                We'll never share your email with anyone else.
+                            </Form.Text>
+                        </Form.Group>
+
+                        <Form.Group controlId="formBasicPassword">
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control type="password" placeholder="Password" name="password" 
+                                onChange = { this.props.onChangeHandler } />
+                            <Form.Text style={{ color: "red", fontWeight: "bold" }}>
+                                We'll never share your email with anyone else.
+                            </Form.Text>
+                        </Form.Group>
+                    </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={props.onHide}>Close</Button>
+                    <Button variant="secondary" onClick={this.props.handleClose} >
+                        Close
+                    </Button>
+
+                    <Button variant="primary" onClick = {this.props.onSubmitListener}>
+                        Login
+                    </Button>
                 </Modal.Footer>
             </Modal>
 
