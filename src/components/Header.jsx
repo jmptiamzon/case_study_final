@@ -50,6 +50,7 @@ class Header extends Component {
         axios.post('http://localhost:8080/login', this.state.userCredentials)
             .then(function(response) {
                 this.setState( { modalState: false } );
+                // sessionStorage.setItem('user_session', this.state.userCredentials);
             })
 
             .catch(function(error){
@@ -67,6 +68,7 @@ class Header extends Component {
                         <Nav className="mr-auto">
                             <Link to = { "/" } className = "nav-link" > Home </Link>
                             <Link to = { "/employee" } className = "nav-link" > Employee </Link>
+                            <Link to = { "/compensation" } className = "nav-link" > Compensation </Link>
                         </Nav>
     
                         <Nav>
