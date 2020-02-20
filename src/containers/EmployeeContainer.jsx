@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
+import EmployeeTable from '../components/employee/EmployeeTable';
 
 class EmployeeContainer extends Component {
     render() {
         return(
-            <h1>asd</h1>
+            <EmployeeTable />
         );
     }
-
 }
 
 export default EmployeeContainer;

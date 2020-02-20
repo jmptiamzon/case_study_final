@@ -18,8 +18,8 @@ function App() {
       
         <Switch>
           <Route exact path = "/" component = { HomeContainer } />
-          <Router path = "/employee" component = { EmployeeContainer } />
-          <Router path = "/compensation" component = { CompensationContainer } />
+          <Route path = "/employee" component = { EmployeeContainer } />
+          <Route path = "/compensation" component = { CompensationContainer } />
         </Switch>
 
     </Router>
