@@ -94,7 +94,7 @@ class EmployeeTable extends Component {
     }
 
     onAddSubmitListener = () => {
-        axios.post('http://localhost:8080/addEmployees', this.state.employeeTemp)
+        axios.post('http://localhost:8080/addEmployees', this.state.employeeAddTemp)
             .then((response) => {
                 this.closeAddModal();
                 swal('Employee Added!', 'Employee successfully added.', 'success');

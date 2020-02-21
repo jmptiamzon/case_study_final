@@ -4,13 +4,13 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form'
 import PropTypes from 'prop-types';
 
-class AddCompensationModal extends Component {
+class EditCompensationModal extends Component {
 
     render() {
         return(
             <Modal
-            show = { this.props.showAddModal }
-            onHide = { this.props.closeAddModal }
+            show = { this.props.showEditModal }
+            onHide = { this.props.closeEditModal }
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
             backdrop = "static"
@@ -18,7 +18,7 @@ class AddCompensationModal extends Component {
             >
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
-                        Add Compensation
+                        Edit Compensation
                     </Modal.Title>
                 </Modal.Header>
 
@@ -27,8 +27,9 @@ class AddCompensationModal extends Component {
                         <Form.Group controlId="formCompType">
                             <Form.Label>Select Compensation Type</Form.Label>
                             <Form.Control as="select"
-                                onChange = { this.props.onAddChangeHandler }
-                                name = "comp_type_id" >
+                                onChange = { this.props.onEditChangeHandler }
+                                name = "comp_type_id" 
+                                defaultValue={this.props.compensationEditTemp.comp_type_id}>
                                 <option value="">------------</option>
                                 {
                                     this.props.compensationTypes.map((compType) => {
@@ -43,8 +44,9 @@ class AddCompensationModal extends Component {
                         <Form.Group controlId="formEmployee">
                             <Form.Label>Select Employee</Form.Label>
                             <Form.Control as="select"
-                                onChange = { this.props.onAddChangeHandler }
-                                name = "emp_id" >
+                                onChange = { this.props.onEditChangeHandler }
+                                name = "emp_id" 
+                                defaultValue={this.props.compensationEditTemp.emp_id} >
                                 <option value="">------------</option>
                                 {
                                     this.props.employees.map((employee) => {
@@ -61,7 +63,7 @@ class AddCompensationModal extends Component {
                         <Form.Group controlId="formAmount">
                             <Form.Label>Amount</Form.Label>
                             <Form.Control type="text" placeholder="Enter amount" name="amount" 
-                                onChange = { this.props.onAddChangeHandler } />
+                                onChange = { this.props.onEditChangeHandler } defaultValue={this.props.compensationEditTemp.amount}/>
                             <Form.Text style={{ color: "red", fontWeight: "bold" }}>
                                 Error
                             </Form.Text>
@@ -70,7 +72,7 @@ class AddCompensationModal extends Component {
                         <Form.Group controlId="formDescription">
                             <Form.Label>Description</Form.Label>
                             <Form.Control type="text" placeholder="Enter description" name="description" 
-                                onChange = { this.props.onAddChangeHandler } />
+                                onChange = { this.props.onEditChangeHandler } defaultValue={this.props.compensationEditTemp.description} />
                             <Form.Text style={{ color: "red", fontWeight: "bold" }}>
                                 Error
                             </Form.Text>
@@ -79,7 +81,7 @@ class AddCompensationModal extends Component {
                         <Form.Group controlId="formDate">
                             <Form.Label>Date</Form.Label>
                             <Form.Control type="date" placeholder="Enter date" name="date" 
-                                format="yyyy-mm-dd" onChange = { this.props.onAddChangeHandler } />
+                                format="yyyy-mm-dd" onChange = { this.props.onEditChangeHandler } defaultValue={this.props.compensationEditTemp.date} />
                             <Form.Text style={{ color: "red", fontWeight: "bold" }}>
                                 Error
                             </Form.Text>
@@ -87,11 +89,11 @@ class AddCompensationModal extends Component {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={ this.props.closeAddModal } >
+                    <Button variant="secondary" onClick={ this.props.closeEditModal } >
                         Close
                     </Button>
 
-                    <Button variant="primary" onClick = {this.props.onAddSubmitListener}>
+                    <Button variant="primary" onClick = {this.props.onEditSubmitListener}>
                         Submit
                     </Button>
                 </Modal.Footer>
@@ -100,14 +102,14 @@ class AddCompensationModal extends Component {
     }
 }
 
-AddCompensationModal.propTypes = {
+EditCompensationModal.propTypes = {
+    onEditChangeHandler: PropTypes.func,
+    onEditSubmitListener: PropTypes.func,
+    closeEditModal: PropTypes.func,
+    showEditModal: PropTypes.bool,
     employees: PropTypes.array,
     compensationTypes: PropTypes.array,
-    onAddChangeHandler: PropTypes.func, 
-    onAddSubmitListener: PropTypes.func,
-    closeAddModal: PropTypes.func,
-    showAddModal: PropTypes.bool
+    compensationEditTemp: PropTypes.object
 }
 
-export default AddCompensationModal;
-
+export default EditCompensationModal;

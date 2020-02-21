@@ -1,8 +1,10 @@
 import React from 'react';
+import CompensationTable from '../components/compensation/CompensationTable';
+
 
 function CompensationContainer() {
     return(
-        <h1>sad</h1>
+        <CompensationTable />
     );
 }
 
