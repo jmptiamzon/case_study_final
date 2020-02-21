@@ -4,7 +4,7 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav';
 import LoginModal from './home/LoginModal';
 import Button from 'react-bootstrap/Button';
-// import swal from 'sweetalert';
+import swal from 'sweetalert';
 import { IoIosLogIn } from 'react-icons/io';
 import { Link } from 'react-router-dom';
 
@@ -42,19 +42,27 @@ class Header extends Component {
         }));
     }
 
-    onSubmitListener = e => {
-        e.preventDefault();
+    onSubmitListener = () => {
+        //e.preventDefault();
         
         const axios = require('axios');
-        
+
         axios.post('http://localhost:8080/login', this.state.userCredentials)
-            .then(function(response) {
-                this.setState( { modalState: false } );
-                // sessionStorage.setItem('user_session', this.state.userCredentials);
+            .then(response => {
+                if (response.data.status) {
+                    this.setState( { modalState: false } );
+                    swal('Login Successful!', 'Click ok to close.', 'success');
+                    // add sessionStorage here
+
+                } else {
+                    // add validation here | dont close the modal | add message under input
+                    swal('Login Failed!', 'Click ok to close.', 'warning');
+                    
+                }
             })
 
-            .catch(function(error){
-
+            .catch(error => {
+                swal('Login Failed!', 'Click ok to close.', 'warning');
             }); 
     }
 

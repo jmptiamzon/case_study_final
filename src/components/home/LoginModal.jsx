@@ -17,7 +17,7 @@ class LoginModal extends Component {
             >
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
-                        HR Login
+                        Login
                     </Modal.Title>
                 </Modal.Header>
 

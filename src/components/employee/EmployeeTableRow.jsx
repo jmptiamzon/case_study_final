@@ -8,6 +8,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 class EmployeeTableRow extends Component {
     render(){
         return(
+            <>
             <TableRow>
                 <TableCell>
                     {this.props.employees.id}
@@ -28,21 +29,24 @@ class EmployeeTableRow extends Component {
                       {this.props.employees.position}
                 </TableCell>
                 <TableCell>
-                    <Button variant="contained" color="primary">
+                    <Button variant="contained" color="primary" onClick={() => this.props.openEditModal(this.props.employees)}>
                         <FaEdit />
                     </Button>
                     &emsp;
-                    <Button variant="contained" color="secondary">
+                    <Button variant="contained" color="secondary" onClick={this.props.onDeleteListener}>
                         <FaTrash />
                     </Button>
                 </TableCell>
             </TableRow>
+            </>
         );
     }
 }
 
 EmployeeTableRow.propTypes = {
-    employees: PropTypes.object
+    employees: PropTypes.object,
+    onDeleteListener: PropTypes.func,
+    openEditModal: PropTypes.func
 }
 
 export default EmployeeTableRow;

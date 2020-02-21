@@ -4,6 +4,8 @@ import HomeContainer from './containers/HomeContainer';
 import EmployeeContainer from './containers/EmployeeContainer';
 import CompensationContainer from './containers/CompensationContainer';
 import Header from './components/Header';
+import Container from '@material-ui/core/Container';
+
 import {
   BrowserRouter as Router,
   Route,
@@ -15,12 +17,15 @@ function App() {
   return (
     <Router>
       <Header />
-      
-        <Switch>
-          <Route exact path = "/" component = { HomeContainer } />
-          <Route path = "/employee" component = { EmployeeContainer } />
-          <Route path = "/compensation" component = { CompensationContainer } />
-        </Switch>
+
+        <Container style = {{marginTop: 30}}>
+          <Switch>
+            <Route exact path = "/" component = { HomeContainer } />
+            <Route path = "/employee" component = { EmployeeContainer } />
+            <Route path = "/compensation" component = { CompensationContainer } />
+          </Switch>
+        </Container>
+
 
     </Router>
   );
