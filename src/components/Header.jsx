@@ -5,8 +5,8 @@ import Nav from 'react-bootstrap/Nav';
 import LoginModal from './home/LoginModal';
 import Button from 'react-bootstrap/Button';
 import swal from 'sweetalert';
-import { IoIosLogIn } from 'react-icons/io';
-import { Link } from 'react-router-dom';
+import { IoIosLogIn, IoIosLogOut } from 'react-icons/io';
+import { Link, withRouter } from 'react-router-dom';
 
 class Header extends Component {
     constructor(props) {
@@ -17,14 +17,32 @@ class Header extends Component {
                 email: '',
                 password: ''
             },
-
+            loginError: false,
             modalState: false,
-            errorTextState: false
+            errorTextState: false,
+            employeeLink: '',
+            compensationLink: '',
+            logoutLoginLink: <Button variant="link" className = "nav-link" 
+                                    onClick = { this.handleOpen } > <IoIosLogIn /> Login </Button>
         };
     }
 
+    componentDidMount() {        
+        if (sessionStorage.getItem('user_cred')) {
+            this.setState( 
+                { 
+                    employeeLink: <Link to = { "/employee" } className = "nav-link" > Employee </Link>, 
+                    compensationLink: <Link to = { "/compensation" } className = "nav-link" > Compensation </Link>,
+                    logoutLoginLink: <Button variant="link" className = "nav-link" 
+                                         onClick = { this.onLogoutListener } > <IoIosLogOut /> Logout </Button>
+                } 
+            );
+        } 
+
+    }
+
     handleClose = () => {
-        this.setState( { modalState: false } );
+        this.setState( { modalState: false, loginError: false } );
     }
 
     handleOpen = () => {
@@ -43,27 +61,59 @@ class Header extends Component {
     }
 
     onSubmitListener = () => {
-        //e.preventDefault();
-        
         const axios = require('axios');
 
-        axios.post('http://localhost:8080/login', this.state.userCredentials)
+        axios.post('http://localhost:8081/login', this.state.userCredentials)
             .then(response => {
                 if (response.data.status) {
-                    this.setState( { modalState: false } );
-                    swal('Login Successful!', 'Click ok to close.', 'success');
-                    // add sessionStorage here
+                    this.setState( 
+                        { 
+                            loginError: false,
+                            modalState: false, 
+                            employeeLink: <Link to = { "/employee" } className = "nav-link" > Employee </Link>, 
+                            compensationLink: <Link to = { "/compensation" } className = "nav-link" > Compensation </Link>,
+                            logoutLoginLink: <Button variant="link" className = "nav-link" 
+                                                 onClick = { this.onLogoutListener } > <IoIosLogOut /> Logout </Button>
+                        } 
+                    );
+                    sessionStorage.setItem('user_cred', this.state.userCredentials);
+                    // add localStorage here
 
                 } else {
                     // add validation here | dont close the modal | add message under input
-                    swal('Login Failed!', 'Click ok to close.', 'warning');
-                    
+                    this.setState( { loginError: true } );
+
                 }
             })
 
             .catch(error => {
-                swal('Login Failed!', 'Click ok to close.', 'warning');
+                // add validation here (backend)
+                console.log(error);
             }); 
+    }
+
+    onLogoutListener = () => {
+        swal({
+            title: "Are you sure you want to logout?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+                this.setState( 
+                    { 
+                        employeeLink: '', 
+                        compensationLink: '',
+                        logoutLoginLink: <Button variant="link" className = "nav-link" 
+                                            onClick = { this.handleOpen } > <IoIosLogIn /> Login </Button>
+                    } 
+                );
+                
+                sessionStorage.removeItem('user_cred');
+                this.props.history.push('/');
+            } 
+          });
     }
 
     render() {
@@ -75,13 +125,12 @@ class Header extends Component {
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="mr-auto">
                             <Link to = { "/" } className = "nav-link" > Home </Link>
-                            <Link to = { "/employee" } className = "nav-link" > Employee </Link>
-                            <Link to = { "/compensation" } className = "nav-link" > Compensation </Link>
+                            {this.state.employeeLink}
+                            {this.state.compensationLink}
                         </Nav>
     
                         <Nav>
-                            <Button variant="link" className = "nav-link" 
-                                onClick = { this.handleOpen } > <IoIosLogIn /> Login </Button>
+                            {this.state.logoutLoginLink}
                         </Nav>
                     </Navbar.Collapse>
                 </Navbar>
@@ -91,10 +140,11 @@ class Header extends Component {
                     handleClose = { this.handleClose }
                     onChangeHandler = { this.onChangeHandler }
                     onSubmitListener = { this.onSubmitListener }
+                    loginError = { this.state.loginError }
                 />
             </>
         );
     }
 }
 
-export default Header;
+export default withRouter(Header);

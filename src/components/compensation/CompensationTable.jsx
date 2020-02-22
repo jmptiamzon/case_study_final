@@ -45,7 +45,7 @@ class CompensationTable extends Component {
     }
 
     async componentDidMount() {
-        await axios.get('http://localhost:8080/getCompensation')
+        await axios.get('http://localhost:8081/getCompensation')
             .then((response) => {
                 this.setState( { compensations: response.data, isLoading: false } );
             })
@@ -54,7 +54,7 @@ class CompensationTable extends Component {
                 // handle error here
             });
 
-        await axios.get('http://localhost:8080/getEmployees')
+        await axios.get('http://localhost:8081/getEmployees')
             .then((response) => {
                 this.setState( { employees: response.data } );
             })
@@ -63,7 +63,7 @@ class CompensationTable extends Component {
                 // handle error
             });
 
-        await axios.get('http://localhost:8080//getCompensationType')
+        await axios.get('http://localhost:8081/getCompensationType')
             .then((response) => {
                 this.setState( { compensationTypes: response.data } )
             })

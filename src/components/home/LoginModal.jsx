@@ -6,6 +6,14 @@ import PropTypes from 'prop-types';
 
 class LoginModal extends Component {
     render() {
+        let errorMessage;
+
+        if (this.props.loginError) {
+            errorMessage =  <Form.Text style={{ color: "red", fontWeight: "bold" }}>
+                                Email / password might be wrong.
+                            </Form.Text>                
+        }
+
         return(
             <Modal
             show = { this.props.open }
@@ -27,18 +35,13 @@ class LoginModal extends Component {
                             <Form.Label>Email address</Form.Label>
                             <Form.Control type="email" placeholder="Enter email" name="email" 
                                 onChange = { this.props.onChangeHandler } />
-                            <Form.Text style={{ color: "red", fontWeight: "bold" }}>
-                                We'll never share your email with anyone else.
-                            </Form.Text>
                         </Form.Group>
 
                         <Form.Group controlId="formBasicPassword">
                             <Form.Label>Password</Form.Label>
                             <Form.Control type="password" placeholder="Password" name="password" 
                                 onChange = { this.props.onChangeHandler } />
-                            <Form.Text style={{ color: "red", fontWeight: "bold" }}>
-                                We'll never share your email with anyone else.
-                            </Form.Text>
+                            {errorMessage}
                         </Form.Group>
                     </Form>
                 </Modal.Body>
@@ -61,7 +64,8 @@ LoginModal.propTypes = {
     open: PropTypes.bool,
     handleClose: PropTypes.func,
     onChangeHandler: PropTypes.func,
-    onSubmitListener: PropTypes.func
+    onSubmitListener: PropTypes.func,
+    loginError: PropTypes.bool
 }
 
 export default LoginModal;
