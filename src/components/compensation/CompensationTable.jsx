@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+// import Table from '@material-ui/core/Table';
+// import TableBody from '@material-ui/core/TableBody';
+// import TableCell from '@material-ui/core/TableCell';
+// import TableContainer from '@material-ui/core/TableContainer';
+// import TableHead from '@material-ui/core/TableHead';
+// import TableRow from '@material-ui/core/TableRow';
+// import Paper from '@material-ui/core/Paper';
+import MaterialTable from 'material-table';
 import { FaMoneyBill } from "react-icons/fa";
 import axios from 'axios';
 import swal from 'sweetalert';
 import AddCompensationModal from './AddCompensationModal';
 import EditCompensationModal from './EditCompensationModal';
-import CompensationTableRow from './CompensationTableRow';
+// import CompensationTableRow from './CompensationTableRow';
 
 class CompensationTable extends Component {
 
@@ -123,7 +124,7 @@ class CompensationTable extends Component {
     }
 
     onAddSubmitListener = () => {
-        axios.post('http://localhost:8080/addCompensation', this.state.compensationAddTemp)
+        axios.post('http://localhost:8081/addCompensation', this.state.compensationAddTemp)
             .then((response) => {
                     this.closeAddModal();
                     swal('Compensation Added!', 'Compensation has been added successfully.', 'success');
@@ -136,7 +137,7 @@ class CompensationTable extends Component {
     }
 
     onEditSubmitListener = () => {
-        axios.post('http://localhost:8080/updateCompensation', this.state.compensationEditTemp)
+        axios.post('http://localhost:8081/updateCompensation', this.state.compensationEditTemp)
             .then((response) => {
                 this.closeEditModal();
                 swal('Compensation Updated!', 'Compensation has been updated successfully.', 'success');
@@ -158,7 +159,7 @@ class CompensationTable extends Component {
           })
           .then((willDelete) => {
             if (willDelete) {
-                axios.get('http://localhost:8080/removeCompensation/' + id)
+                axios.get('http://localhost:8081/removeCompensation/' + id)
                     .then((response) => { 
                         swal('Compensation Removed!', 'Compensation successfully removed.', 'success');
                         this.setState( { compensations: response.data.body } );
@@ -171,73 +172,59 @@ class CompensationTable extends Component {
           });
     }
 
-
     render() {
         return(
             <>
-                <Button variant="contained" color="primary" style = {{marginBottom: 10, float: "right"}} onClick={this.openAddModal}>
+                <Button variant="contained" color="primary" style = {{marginBottom: 10}} onClick={this.openAddModal}>
                     <FaMoneyBill /> &emsp; Add Compensation
                 </Button>
 
-                <TableContainer component={Paper} >
-                    <Table aria-label="simple table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>ID</TableCell>
-                                <TableCell>Compensation Type</TableCell>
-                                <TableCell>Employee Name</TableCell>
-                                <TableCell>Amount</TableCell>
-                                <TableCell>Description</TableCell>
-                                <TableCell>Date</TableCell>
-                                <TableCell>Action</TableCell>
-                            </TableRow>
-                        </TableHead>
+                <MaterialTable
+                        title="Compensations"
+                        columns={[
+                            { title: 'ID', field: 'compId' },
+                            { title: 'Compensation Type', field: 'compType' },
+                            { title: 'Employee Name', field: 'empName' },
+                            { title: 'Amount', field: 'amount' },
+                            { title: 'Description', field: 'description' },
+                            { title: 'Date', field: 'date', type: 'date' },
+                        ]}
+                        data={this.state.compensations}        
+                        actions={[
+                            {
+                            icon: 'edit',
+                            tooltip: 'Edit Compensation',
+                            onClick: (event, rowData) => this.openEditModal(rowData)
+                            },
+                            {
+                                icon: 'delete',
+                                tooltip: 'Remove Compensation',
+                                onClick: (event, rowData) => this.onDeleteListener(rowData.compId)
+                            }
+                        ]}
+                        options={{
+                            actionsColumnIndex: -1
+                        }}
+                />
 
-                        <TableBody>
+                <AddCompensationModal
+                    employees = {this.state.employees}
+                    compensationTypes = {this.state.compensationTypes}
+                    onAddChangeHandler = {this.onAddChangeHandler} 
+                    onAddSubmitListener = {this.onAddSubmitListener}
+                    closeAddModal = {this.closeAddModal}
+                    showAddModal = {this.state.showAddModal}
+                />
 
-                        {!this.state.isLoading ? (
-                            this.state.compensations.map(compensation => {
-                                return(
-                                    <CompensationTableRow
-                                        key = {compensation.compId} 
-                                        compensation = {compensation}
-                                        onDeleteListener = {this.onDeleteListener}
-                                        openEditModal = {this.openEditModal}
-                                    />
-                                );
-                            })
-                        ) :
-                        (   
-                            <TableRow>
-                                <TableCell>
-                                    ok la
-                                </TableCell>
-                            </TableRow>
-                        )
-                        }
-
-                        </TableBody>
-                    </Table>
-            </TableContainer>
-
-            <AddCompensationModal
-                employees = {this.state.employees}
-                compensationTypes = {this.state.compensationTypes}
-                onAddChangeHandler = {this.onAddChangeHandler} 
-                onAddSubmitListener = {this.onAddSubmitListener}
-                closeAddModal = {this.closeAddModal}
-                showAddModal = {this.state.showAddModal}
-            />
-
-            <EditCompensationModal
-                onEditChangeHandler = {this.onEditChangeHandler}
-                onEditSubmitListener = {this.onEditSubmitListener}
-                closeEditModal = {this.closeEditModal}
-                showEditModal = {this.state.showEditModal}
-                employees = {this.state.employees}
-                compensationTypes = {this.state.compensationTypes}
-                compensationEditTemp = {this.state.compensationEditTemp}
-            />
+                <EditCompensationModal
+                    onEditChangeHandler = {this.onEditChangeHandler}
+                    onEditSubmitListener = {this.onEditSubmitListener}
+                    closeEditModal = {this.closeEditModal}
+                    showEditModal = {this.state.showEditModal}
+                    employees = {this.state.employees}
+                    compensationTypes = {this.state.compensationTypes}
+                    compensationEditTemp = {this.state.compensationEditTemp}
+                />
 
             </>
         );

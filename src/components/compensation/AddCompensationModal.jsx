@@ -33,7 +33,7 @@ class AddCompensationModal extends Component {
                                 {
                                     this.props.compensationTypes.map((compType) => {
                                         return(
-                                            <option value={compType.id}>{compType.comptype}</option>
+                                            <option key={compType.id} value={compType.id}>{compType.comptype}</option>
                                         );
                                     })
                                 }
@@ -49,7 +49,7 @@ class AddCompensationModal extends Component {
                                 {
                                     this.props.employees.map((employee) => {
                                         return(
-                                            <option value={employee.id}>
+                                            <option key={employee.id} value={employee.id} >
                                                 {employee.firstname + " " + employee.middlename + " " + employee.lastname}
                                             </option>
                                         );

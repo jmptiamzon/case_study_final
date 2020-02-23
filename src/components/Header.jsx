@@ -22,6 +22,7 @@ class Header extends Component {
             errorTextState: false,
             employeeLink: '',
             compensationLink: '',
+            compensationHistoryLink: '',
             logoutLoginLink: <Button variant="link" className = "nav-link" 
                                     onClick = { this.handleOpen } > <IoIosLogIn /> Login </Button>
         };
@@ -33,6 +34,7 @@ class Header extends Component {
                 { 
                     employeeLink: <Link to = { "/employee" } className = "nav-link" > Employee </Link>, 
                     compensationLink: <Link to = { "/compensation" } className = "nav-link" > Compensation </Link>,
+                    compensationHistoryLink: <Link to = { "/compensation-history" } className = "nav-link" > Compensation History </Link>,
                     logoutLoginLink: <Button variant="link" className = "nav-link" 
                                          onClick = { this.onLogoutListener } > <IoIosLogOut /> Logout </Button>
                 } 
@@ -72,6 +74,7 @@ class Header extends Component {
                             modalState: false, 
                             employeeLink: <Link to = { "/employee" } className = "nav-link" > Employee </Link>, 
                             compensationLink: <Link to = { "/compensation" } className = "nav-link" > Compensation </Link>,
+                            compensationHistoryLink: <Link to = { "/compensation-history" } className = "nav-link" > Compensation History </Link>,
                             logoutLoginLink: <Button variant="link" className = "nav-link" 
                                                  onClick = { this.onLogoutListener } > <IoIosLogOut /> Logout </Button>
                         } 
@@ -105,6 +108,7 @@ class Header extends Component {
                     { 
                         employeeLink: '', 
                         compensationLink: '',
+                        compensationHistoryLink: '',
                         logoutLoginLink: <Button variant="link" className = "nav-link" 
                                             onClick = { this.handleOpen } > <IoIosLogIn /> Login </Button>
                     } 
@@ -127,6 +131,7 @@ class Header extends Component {
                             <Link to = { "/" } className = "nav-link" > Home </Link>
                             {this.state.employeeLink}
                             {this.state.compensationLink}
+                            {this.state.compensationHistoryLink}
                         </Nav>
     
                         <Nav>
