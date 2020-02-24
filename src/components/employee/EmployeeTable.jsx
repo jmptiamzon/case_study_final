@@ -193,7 +193,7 @@ class EmployeeTable extends Component {
     onAddSubmitListener = () => {
         const errorCheck = this.state.errorValidation;
         const fieldToSubmit = this.state.employeeAddTemp;
-        
+
         if (errorCheck.firstnameError === '' && errorCheck.middlenameError === '' && 
                 errorCheck.lastnameError === '' && errorCheck.birthdateError === '' && 
                     errorCheck.positionError === '') {
@@ -204,9 +204,13 @@ class EmployeeTable extends Component {
 
                 axios.post('http://localhost:8080/addEmployees', this.state.employeeAddTemp)
                 .then((response) => {
+                    if (response) {
+
+                    }
+
                     this.closeAddModal();
                     swal('Employee Added!', 'Employee successfully added.', 'success');
-                    this.setState( { employees: response.data.body } );
+                    this.setState( { employees: response.data.employees } );
                 })
                                 
                 .catch((error) => {
