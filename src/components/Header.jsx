@@ -65,7 +65,7 @@ class Header extends Component {
     onSubmitListener = () => {
         const axios = require('axios');
 
-        axios.post('http://localhost:8081/login', this.state.userCredentials)
+        axios.post('http://localhost:8080/login', this.state.userCredentials)
             .then(response => {
                 if (response.data.status) {
                     this.setState( 

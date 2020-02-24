@@ -20,13 +20,12 @@ class CompensationMonth extends Component {
         super(props);
 
         this.state = {
-            employees: [],
-            compensations: []
+            employees: []
         }
     }
     
     async componentDidMount() {
-        await axios.get('http://localhost:8081/getEmployees')
+        await axios.get('http://localhost:8080/getEmployees')
                 .then((response) => {
                     this.setState( { employees: response.data } );
                 })
@@ -91,7 +90,7 @@ class CompensationMonth extends Component {
                                 </TableHead>
 
                                 <TableBody>
-                                    {this.props.compensationResultsLength !== 0 ? (
+                                    {this.props.compensationResultLength !== 0 ? (
                                         this.props.compensationResult.map((result) => {
                                             return(
                                                 <TableRow key={result.compId}>

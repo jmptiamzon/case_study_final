@@ -53,7 +53,7 @@ class EmployeeTable extends Component {
     }
 
     async componentDidMount() {
-        await axios.get('http://localhost:8081/getEmployees')
+        await axios.get('http://localhost:8080/getEmployees')
             .then((response) => {
                 this.setState( { isLoading: false, employees: response.data } );
             })
@@ -202,7 +202,7 @@ class EmployeeTable extends Component {
             if (fieldToSubmit.firstname.trim().length !== 0 && fieldToSubmit.lastname.trim().length !== 0
                 && fieldToSubmit.birthdate.trim().length !== 0 && fieldToSubmit.position.trim().length !== 0) {
 
-                axios.post('http://localhost:8081/addEmployees', this.state.employeeAddTemp)
+                axios.post('http://localhost:8080/addEmployees', this.state.employeeAddTemp)
                 .then((response) => {
                     this.closeAddModal();
                     swal('Employee Added!', 'Employee successfully added.', 'success');
@@ -238,7 +238,7 @@ class EmployeeTable extends Component {
             if (fieldToSubmit.firstname.trim().length !== 0 && fieldToSubmit.lastname.trim().length !== 0
                 && fieldToSubmit.birthdate.trim().length !== 0 && fieldToSubmit.position.trim().length !== 0) {
                     
-                axios.post('http://localhost:8081/updateEmployees', this.state.employeeEditTemp)
+                axios.post('http://localhost:8080/updateEmployees', this.state.employeeEditTemp)
                 .then((response) => {
                     this.closeEditModal();
                     swal('Employee Updated!', 'Employee successfully updated.', 'success');
@@ -271,7 +271,7 @@ class EmployeeTable extends Component {
           })
           .then((willDelete) => {
             if (willDelete) {
-                axios.get('http://localhost:8081/removeEmployees/' + id)
+                axios.get('http://localhost:8080/removeEmployees/' + id)
                     .then((response) => { 
                         swal('Employee Removed!', 'Employee successfully removed.', 'success');
                         this.setState( { employees: response.data.body } );
@@ -293,6 +293,7 @@ class EmployeeTable extends Component {
                 
                 <MaterialTable
                     title="Employees"
+                    style={{marginBottom: "10vh"}}
                     columns={[
                         { title: 'ID', field: 'id' },
                         { title: 'Firstname', field: 'firstname' },
@@ -335,6 +336,7 @@ class EmployeeTable extends Component {
                     employees = {this.state.employeeEditTemp}
                     errorValidation = {this.state.errorValidation}
                 />
+
           </>
         );
     }

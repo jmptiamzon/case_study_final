@@ -46,7 +46,7 @@ class CompensationTable extends Component {
     }
 
     async componentDidMount() {
-        await axios.get('http://localhost:8081/getCompensation')
+        await axios.get('http://localhost:8080/getCompensation')
             .then((response) => {
                 this.setState( { compensations: response.data, isLoading: false } );
             })
@@ -55,7 +55,7 @@ class CompensationTable extends Component {
                 // handle error here
             });
 
-        await axios.get('http://localhost:8081/getEmployees')
+        await axios.get('http://localhost:8080/getEmployees')
             .then((response) => {
                 this.setState( { employees: response.data } );
             })
@@ -64,7 +64,7 @@ class CompensationTable extends Component {
                 // handle error
             });
 
-        await axios.get('http://localhost:8081/getCompensationType')
+        await axios.get('http://localhost:8080/getCompensationType')
             .then((response) => {
                 this.setState( { compensationTypes: response.data } )
             })
@@ -124,7 +124,7 @@ class CompensationTable extends Component {
     }
 
     onAddSubmitListener = () => {
-        axios.post('http://localhost:8081/addCompensation', this.state.compensationAddTemp)
+        axios.post('http://localhost:8080/addCompensation', this.state.compensationAddTemp)
             .then((response) => {
                     this.closeAddModal();
                     swal('Compensation Added!', 'Compensation has been added successfully.', 'success');
@@ -137,7 +137,7 @@ class CompensationTable extends Component {
     }
 
     onEditSubmitListener = () => {
-        axios.post('http://localhost:8081/updateCompensation', this.state.compensationEditTemp)
+        axios.post('http://localhost:8080/updateCompensation', this.state.compensationEditTemp)
             .then((response) => {
                 this.closeEditModal();
                 swal('Compensation Updated!', 'Compensation has been updated successfully.', 'success');
@@ -159,7 +159,7 @@ class CompensationTable extends Component {
           })
           .then((willDelete) => {
             if (willDelete) {
-                axios.get('http://localhost:8081/removeCompensation/' + id)
+                axios.get('http://localhost:8080/removeCompensation/' + id)
                     .then((response) => { 
                         swal('Compensation Removed!', 'Compensation successfully removed.', 'success');
                         this.setState( { compensations: response.data.body } );
