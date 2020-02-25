@@ -41,14 +41,22 @@ class CompensationTable extends Component {
                 amount: '',
                 description: '',
                 date: ''
-            }   
+            },
+            validationError: {
+                comp_type_idError: '',
+                emp_idError: '',
+                amountError: '',
+                descriptionError: '',
+                dateError: '',
+                errorMessage: ''
+            } 
         };
     }
 
     async componentDidMount() {
         await axios.get('http://localhost:8080/getCompensation')
             .then((response) => {
-                this.setState( { compensations: response.data, isLoading: false } );
+                this.setState( { compensations: response.data.compensationList, isLoading: false } );
             })
 
             .catch((error) => {
@@ -103,50 +111,189 @@ class CompensationTable extends Component {
 
     onAddChangeHandler = e => {
         const { name, value } = e.target;
+        const errorMessage = this.validationHandler(name, value);
 
-        this.setState((prevState) => ({
-            compensationAddTemp: {
-                ...prevState.compensationAddTemp,
-                [name]: value
-            }
-        }));
+        if (errorMessage.length === 0) {
+            this.setState((prevState) => ({
+                compensationAddTemp: {
+                    ...prevState.compensationAddTemp,
+                    [name]: value
+                },
+
+                validationError: {
+                    ...prevState.validationError,
+                    errorMessage: '',
+                    [name+'Error']: ''
+                }
+            }));
+
+        } else {
+            this.setState((prevState) => ({
+                validationError: {
+                    ...prevState.validationError,
+                    errorMessage: '',
+                    [name+'Error']: errorMessage
+                }
+            }));
+        }
+
+
     }
 
     onEditChangeHandler = e => {
         const { name, value } = e.target;
+        const errorMessage = this.validationHandler(name, value);
 
-        this.setState((prevState) => ({
-            compensationEditTemp: {
-                ...prevState.compensationEditTemp,
-                [name]: value
+        if (errorMessage.length === 0) {
+            this.setState((prevState) => ({
+                compensationEditTemp: {
+                    ...prevState.compensationEditTemp,
+                    [name]: value
+                },
+
+                validationError: {
+                    ...prevState.validationError,
+                    errorMessage: '',
+                    [name+'Error']: ''
+                }
+            }));
+
+        } else {
+            this.setState((prevState) => ({
+                validationError: {
+                    ...prevState.validationError,
+                    errorMessage: '',
+                    [name+'Error']: errorMessage
+                }
+            }));
+        }
+    }
+
+    validationHandler = (name, value) => {
+        let errorMessage = '';
+        
+        if (value.trim().length === 0) {
+            errorMessage = ' field is required.';
+        }
+
+        if (name === 'date') {
+            if (value.trim().split('-').length < 2) {
+                errorMessage = ' must be completed.';
             }
-        }));
+        }
+
+        return errorMessage;
     }
 
     onAddSubmitListener = () => {
-        axios.post('http://localhost:8080/addCompensation', this.state.compensationAddTemp)
-            .then((response) => {
-                    this.closeAddModal();
-                    swal('Compensation Added!', 'Compensation has been added successfully.', 'success');
-                    this.setState( { compensations: response.data.body } );
-            })
+        const errorCheck = this.state.validationError;
+        const fieldToSubmit = this.state.compensationAddTemp;
 
-            .catch((error) => {
-                // error handler
-            });
+        if (errorCheck.comp_type_idError === '' && errorCheck.emp_idError === '' && 
+            errorCheck.amountError === '' && errorCheck.descriptionError === '' && 
+            errorCheck.dateError === '') {
+
+            if (fieldToSubmit.emp_id.trim().length !== 0 && fieldToSubmit.comp_type_id.trim().length !== 0
+                && fieldToSubmit.amount.trim().length !== 0 && fieldToSubmit.description.trim().length !== 0
+                && fieldToSubmit.date.trim().length !== 0) {
+
+                    axios.post('http://localhost:8080/addCompensation', this.state.compensationAddTemp)
+                    .then((response) => {
+                        if (response.data.status) {
+                            this.setState( 
+                                {  
+                                    validationError: {
+                                        comp_type_idError: response.data.compTypeError === null ? '' : response.data.compTypeError,
+                                        emp_idError: response.data.empIdError === null ? '' : response.data.empIdError,
+                                        amountError: response.data.amountError === null ? '' : response.data.amountError,
+                                        descriptionError: response.data.descriptionError === null ? '' : response.data.descriptionError,
+                                        dateError:  response.data.dateError === null ? '' : response.data.dateError,
+                                        errorMessage: response.data.errorMessage === null ? '' : response.data.errorMessage,
+                                    },
+                                } 
+                            );
+        
+                        } else {
+                            this.setState( 
+                                {  
+                                    compensations: response.data.compensationList,
+                                    validationError: {
+                                        comp_type_idError: '',
+                                        emp_idError: '',
+                                        amountError: '',
+                                        descriptionError: '',
+                                        dateError:  '',
+                                        errorMessage: ''
+                                    }
+                                } 
+                            );
+                            
+                            this.closeAddModal();
+                            swal('Compensation Added!', 'Compensation has been added successfully.', 'success');
+                        }
+        
+                    })
+        
+                    .catch((error) => {
+                        // error handler
+                    });
+            }
+            
+        }
+
     }
 
     onEditSubmitListener = () => {
-        axios.post('http://localhost:8080/updateCompensation', this.state.compensationEditTemp)
-            .then((response) => {
-                this.closeEditModal();
-                swal('Compensation Updated!', 'Compensation has been updated successfully.', 'success');
-                this.setState( { compensations: response.data.body } );
-            })
+        const errorCheck = this.state.validationError;
+        const fieldToSubmit = this.state.compensationEditTemp;
 
-            .catch((error) => {
+        if (errorCheck.amountError === '' && errorCheck.descriptionError === '' ) {
 
-            });
+            if (fieldToSubmit.description.trim().length !== 0) {
+                    axios.post('http://localhost:8080/updateCompensation', this.state.compensationEditTemp)
+                    .then((response) => {
+                        if (response.data.status) {
+                            this.setState( 
+                                {  
+                                    validationError: {
+                                        comp_type_idError: response.data.compTypeError === null ? '' : response.data.compTypeError,
+                                        emp_idError: response.data.empIdError === null ? '' : response.data.empIdError,
+                                        amountError: response.data.amountError === null ? '' : response.data.amountError,
+                                        descriptionError: response.data.descriptionError === null ? '' : response.data.descriptionError,
+                                        dateError:  response.data.dateError === null ? '' : response.data.dateError,
+                                        errorMessage: response.data.errorMessage === null ? '' : response.data.errorMessage,
+                                    },
+                                } 
+                            );
+        
+                        } else {
+                            this.setState( 
+                                {  
+                                    compensations: response.data.compensationList,
+                                    validationError: {
+                                        comp_type_idError: '',
+                                        emp_idError: '',
+                                        amountError: '',
+                                        descriptionError: '',
+                                        dateError:  '',
+                                        errorMessage: ''
+                                    }
+                                } 
+                            );
+                            
+                            this.closeEditModal();
+                            swal('Compensation Updated!', 'Compensation has been updated successfully.', 'success');
+                        }
+        
+                    })
+        
+                    .catch((error) => {
+                        //asd
+                    });
+
+            }
+
+        }
     }
 
     onDeleteListener = id => {
@@ -162,7 +309,7 @@ class CompensationTable extends Component {
                 axios.get('http://localhost:8080/removeCompensation/' + id)
                     .then((response) => { 
                         swal('Compensation Removed!', 'Compensation successfully removed.', 'success');
-                        this.setState( { compensations: response.data.body } );
+                        this.setState( { compensations: response.data.compensationList } );
                     })
     
                     .catch((error) => {
@@ -214,6 +361,7 @@ class CompensationTable extends Component {
                     onAddSubmitListener = {this.onAddSubmitListener}
                     closeAddModal = {this.closeAddModal}
                     showAddModal = {this.state.showAddModal}
+                    validationError = {this.state.validationError}
                 />
 
                 <EditCompensationModal
@@ -224,6 +372,7 @@ class CompensationTable extends Component {
                     employees = {this.state.employees}
                     compensationTypes = {this.state.compensationTypes}
                     compensationEditTemp = {this.state.compensationEditTemp}
+                    validationError = {this.state.validationError}
                 />
 
             </>

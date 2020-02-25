@@ -24,12 +24,17 @@ class EditCompensationModal extends Component {
 
                 <Modal.Body style={{height: 350, overflowY: "auto"}}>
                     <Form>
+                        <h6 style={{color: "red", fontWeight: "bold"}} >    
+                            {this.props.validationError.errorMessage}
+                        </h6>
+
                         <Form.Group controlId="formCompType">
                             <Form.Label>Select Compensation Type</Form.Label>
                             <Form.Control as="select"
                                 onChange = { this.props.onEditChangeHandler }
                                 name = "comp_type_id" 
-                                defaultValue={this.props.compensationEditTemp.comp_type_id}>
+                                defaultValue={this.props.compensationEditTemp.comp_type_id}
+                                disabled >
                                 <option value="">------------</option>
                                 {
                                     this.props.compensationTypes.map((compType) => {
@@ -39,6 +44,9 @@ class EditCompensationModal extends Component {
                                     })
                                 }
                             </Form.Control>
+                            <Form.Text style={{color: "red", fontWeight: "bold"}}>
+                                {this.props.validationError.comp_type_idError}
+                            </Form.Text>
                         </Form.Group>
 
                         <Form.Group controlId="formEmployee">
@@ -46,7 +54,8 @@ class EditCompensationModal extends Component {
                             <Form.Control as="select"
                                 onChange = { this.props.onEditChangeHandler }
                                 name = "emp_id" 
-                                defaultValue={this.props.compensationEditTemp.emp_id} >
+                                defaultValue={this.props.compensationEditTemp.emp_id} 
+                                disabled >
                                 <option value="">------------</option>
                                 {
                                     this.props.employees.map((employee) => {
@@ -58,14 +67,17 @@ class EditCompensationModal extends Component {
                                     })
                                 }
                             </Form.Control>
+                            <Form.Text style={{color: "red", fontWeight: "bold"}}>
+                                {this.props.validationError.emp_idError}
+                            </Form.Text>
                         </Form.Group>
 
                         <Form.Group controlId="formAmount">
                             <Form.Label>Amount</Form.Label>
                             <Form.Control type="text" placeholder="Enter amount" name="amount" 
-                                onChange = { this.props.onEditChangeHandler } defaultValue={this.props.compensationEditTemp.amount}/>
+                                onChange = { this.props.onEditChangeHandler } defaultValue={this.props.compensationEditTemp.amount} />
                             <Form.Text style={{ color: "red", fontWeight: "bold" }}>
-                                Error
+                                {this.props.validationError.amountError}
                             </Form.Text>
                         </Form.Group>
 
@@ -74,16 +86,17 @@ class EditCompensationModal extends Component {
                             <Form.Control type="text" placeholder="Enter description" name="description" 
                                 onChange = { this.props.onEditChangeHandler } defaultValue={this.props.compensationEditTemp.description} />
                             <Form.Text style={{ color: "red", fontWeight: "bold" }}>
-                                Error
+                                {this.props.validationError.descriptionError}
                             </Form.Text>
                         </Form.Group>
 
                         <Form.Group controlId="formDate">
                             <Form.Label>Date</Form.Label>
                             <Form.Control type="date" placeholder="Enter date" name="date" 
-                                format="yyyy-mm-dd" onChange = { this.props.onEditChangeHandler } defaultValue={this.props.compensationEditTemp.date} />
+                                format="yyyy-mm-dd" onChange = { this.props.onEditChangeHandler } defaultValue={this.props.compensationEditTemp.date} 
+                                disabled />
                             <Form.Text style={{ color: "red", fontWeight: "bold" }}>
-                                Error
+                                {this.props.validationError.dateError}
                             </Form.Text>
                         </Form.Group>
                     </Form>
@@ -109,7 +122,8 @@ EditCompensationModal.propTypes = {
     showEditModal: PropTypes.bool,
     employees: PropTypes.array,
     compensationTypes: PropTypes.array,
-    compensationEditTemp: PropTypes.object
+    compensationEditTemp: PropTypes.object,
+    validationError: PropTypes.object
 }
 
 export default EditCompensationModal;

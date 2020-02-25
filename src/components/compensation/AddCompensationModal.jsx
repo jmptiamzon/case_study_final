@@ -24,6 +24,10 @@ class AddCompensationModal extends Component {
 
                 <Modal.Body style={{height: 350, overflowY: "auto"}}>
                     <Form>
+                        <h6 style={{color: "red", fontWeight: "bold"}} >    
+                            {this.props.validationError.errorMessage}
+                        </h6>
+
                         <Form.Group controlId="formCompType">
                             <Form.Label>Select Compensation Type</Form.Label>
                             <Form.Control as="select"
@@ -38,6 +42,9 @@ class AddCompensationModal extends Component {
                                     })
                                 }
                             </Form.Control>
+                            <Form.Text style={{color: "red", fontWeight: "bold"}}>
+                                {this.props.validationError.comp_type_idError}
+                            </Form.Text>
                         </Form.Group>
 
                         <Form.Group controlId="formEmployee">
@@ -56,6 +63,9 @@ class AddCompensationModal extends Component {
                                     })
                                 }
                             </Form.Control>
+                            <Form.Text style={{color: "red", fontWeight: "bold"}}>
+                                {this.props.validationError.emp_idError}
+                            </Form.Text>
                         </Form.Group>
 
                         <Form.Group controlId="formAmount">
@@ -63,7 +73,7 @@ class AddCompensationModal extends Component {
                             <Form.Control type="text" placeholder="Enter amount" name="amount" 
                                 onChange = { this.props.onAddChangeHandler } />
                             <Form.Text style={{ color: "red", fontWeight: "bold" }}>
-                                Error
+                                {this.props.validationError.amountError}
                             </Form.Text>
                         </Form.Group>
 
@@ -72,7 +82,7 @@ class AddCompensationModal extends Component {
                             <Form.Control type="text" placeholder="Enter description" name="description" 
                                 onChange = { this.props.onAddChangeHandler } />
                             <Form.Text style={{ color: "red", fontWeight: "bold" }}>
-                                Error
+                                {this.props.validationError.descriptionError}
                             </Form.Text>
                         </Form.Group>
 
@@ -81,7 +91,7 @@ class AddCompensationModal extends Component {
                             <Form.Control type="date" placeholder="Enter date" name="date" 
                                 format="yyyy-mm-dd" onChange = { this.props.onAddChangeHandler } />
                             <Form.Text style={{ color: "red", fontWeight: "bold" }}>
-                                Error
+                                {this.props.validationError.dateError}
                             </Form.Text>
                         </Form.Group>
                     </Form>
@@ -106,7 +116,8 @@ AddCompensationModal.propTypes = {
     onAddChangeHandler: PropTypes.func, 
     onAddSubmitListener: PropTypes.func,
     closeAddModal: PropTypes.func,
-    showAddModal: PropTypes.bool
+    showAddModal: PropTypes.bool,
+    validationError: PropTypes.object
 }
 
 export default AddCompensationModal;
