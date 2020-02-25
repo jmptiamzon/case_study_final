@@ -11,7 +11,6 @@ import EditEmployeeModal from './EditEmployeeModal';
 // import TableRow from '@material-ui/core/TableRow';
 import MaterialTable from 'material-table';
 // import Paper from '@material-ui/core/Paper';
-import Form from 'react-bootstrap/Form'
 import { FaUserPlus } from "react-icons/fa";
 import axios from 'axios';
 import swal from 'sweetalert';
@@ -117,6 +116,7 @@ class EmployeeTable extends Component {
 
                 errorValidation: {
                     ...prevState.errorValidation,
+                    formEmptyMessage: '',
                     [name + 'Error']: ''
                 }
             }));
@@ -125,9 +125,8 @@ class EmployeeTable extends Component {
             this.setState((prevState) => ({
                 errorValidation: {
                     ...prevState.errorValidation,
-                    [name + 'Error']: <Form.Text style={{ color: "red", fontWeight: "bold" }}>
-                                        {errorMessage}
-                                      </Form.Text>  
+                    formEmptyMessage: '',
+                    [name + 'Error']: errorMessage
                 }
             }));
         }
@@ -146,6 +145,7 @@ class EmployeeTable extends Component {
 
                 errorValidation: {
                     ...prevState.errorValidation,
+                    formEmptyMessage: '',
                     [name + 'Error']: ''
                 }
             }));
@@ -154,9 +154,8 @@ class EmployeeTable extends Component {
             this.setState((prevState) => ({
                 errorValidation: {
                     ...prevState.errorValidation,
-                    [name + 'Error']: <Form.Text style={{ color: "red", fontWeight: "bold" }}>
-                                        {errorMessage}
-                                      </Form.Text>  
+                    formEmptyMessage: '',
+                    [name + 'Error']: errorMessage
                 }
             }));
         }
@@ -183,7 +182,13 @@ class EmployeeTable extends Component {
              }
 
             if (name === 'birthdate') {
-                errorMessage = '';
+                if (value.split('-').length === 3) {
+                    errorMessage = '';
+
+                } else {
+                    errorMessage = 'Please complete the birthdate field.';
+
+                }
             }
         }
 
@@ -197,20 +202,34 @@ class EmployeeTable extends Component {
         if (errorCheck.firstnameError === '' && errorCheck.middlenameError === '' && 
                 errorCheck.lastnameError === '' && errorCheck.birthdateError === '' && 
                     errorCheck.positionError === '') {
-                        
 
             if (fieldToSubmit.firstname.trim().length !== 0 && fieldToSubmit.lastname.trim().length !== 0
                 && fieldToSubmit.birthdate.trim().length !== 0 && fieldToSubmit.position.trim().length !== 0) {
 
-                axios.post('http://localhost:8080/addEmployees', this.state.employeeAddTemp)
+                axios.post('http://localhost:8080/addEmployees', fieldToSubmit)
                 .then((response) => {
-                    if (response) {
+                    if (response.data.status) {
+
+                        this.setState( 
+                            { 
+                                errorValidation: {
+                                    firstnameError: response.data.firstNameError === null ? '' : response.data.firstNameError,
+                                    middlenameError: response.data.middleNameError === null ? '' : response.data.middleNameError,
+                                    lastnameError: response.data.lastNameError === null ? '' : response.data.lastNameError,
+                                    birthdateError: response.data.birthdateError === null ? '' : response.data.birthdateError,
+                                    positionError: response.data.positionError === null ? '' : response.data.positionError,
+                                    formEmptyMessage: response.data.userExistsError === null ? '' : response.data.userExistsError    
+                                }  
+                            } 
+                        );
+
+                    } else {
+                        this.closeAddModal();
+                        swal('Employee Added!', 'Employee successfully added.', 'success');
+                        this.setState( { employees: response.data.employees } );
 
                     }
 
-                    this.closeAddModal();
-                    swal('Employee Added!', 'Employee successfully added.', 'success');
-                    this.setState( { employees: response.data.employees } );
                 })
                                 
                 .catch((error) => {
@@ -242,11 +261,28 @@ class EmployeeTable extends Component {
             if (fieldToSubmit.firstname.trim().length !== 0 && fieldToSubmit.lastname.trim().length !== 0
                 && fieldToSubmit.birthdate.trim().length !== 0 && fieldToSubmit.position.trim().length !== 0) {
                     
-                axios.post('http://localhost:8080/updateEmployees', this.state.employeeEditTemp)
+                axios.post('http://localhost:8080/updateEmployees', fieldToSubmit)
                 .then((response) => {
-                    this.closeEditModal();
-                    swal('Employee Updated!', 'Employee successfully updated.', 'success');
-                    this.setState( { employees: response.data.body } );
+                    if (response.data.status) {
+                        this.setState( 
+                            { 
+                                errorValidation: {
+                                    firstnameError: response.data.firstNameError === null ? '' : response.data.firstNameError,
+                                    middlenameError: response.data.middleNameError === null ? '' : response.data.middleNameError,
+                                    lastnameError: response.data.lastNameError === null ? '' : response.data.lastNameError,
+                                    birthdateError: response.data.birthdateError === null ? '' : response.data.birthdateError,
+                                    positionError: response.data.positionError === null ? '' : response.data.positionError,
+                                    formEmptyMessage: response.data.userExistsError === null ? '' : response.data.userExistsError    
+                                }  
+                            } 
+                        );
+
+                    } else {                    
+                        this.closeEditModal();
+                        swal('Employee Updated!', 'Employee successfully updated.', 'success');
+                        this.setState( { employees: response.data.employees } );
+
+                    }
                 })
                     
                 .catch((error) => {
@@ -268,7 +304,7 @@ class EmployeeTable extends Component {
     onDeleteListener = id => {
         swal({
             title: "Are you sure?",
-            text: "Once deleted, you will not be able to undo the process.",
+            text: "Once deleted, all information related to this reference will also be deleted.",
             icon: "warning",
             buttons: true,
             dangerMode: true,

@@ -17,46 +17,58 @@ class EditEmployeeModal extends Component {
             >
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
-                        Add Employees
+                        Update Employee
                     </Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body style={{height: 350, overflowY: "auto"}}>
                     <Form>
-                        {this.props.errorValidation.formEmptyMessage}
+                        <h6 style={{color: "red", fontWeight: "bold"}} >
+                            {this.props.errorValidation.formEmptyMessage}
+                        </h6>
                         <Form.Group controlId="formFirstname">
                             <Form.Label>Firstname</Form.Label>
                             <Form.Control type="text" placeholder="Enter firstname" name="firstname" 
                                 onChange = { this.props.onEditChangeHandler } defaultValue = {this.props.employees.firstname} />
-                            {this.props.errorValidation.firstnameError}
+                            <Form.Text style={{color: "red", fontWeight: "bold"}}>
+                                {this.props.errorValidation.firstnameError}
+                            </Form.Text>
                         </Form.Group>
 
                         <Form.Group controlId="formMiddlename">
                             <Form.Label>Middlename</Form.Label>
                             <Form.Control type="text" placeholder="Enter middlname" name="middlename" 
                                 onChange = { this.props.onEditChangeHandler } defaultValue = {this.props.employees.middlename} />
-                            {this.props.errorValidation.middlenameError}
+                            <Form.Text style={{color: "red", fontWeight: "bold"}} >
+                                {this.props.errorValidation.middlenameError}
+                            </Form.Text>
                         </Form.Group>
 
                         <Form.Group controlId="formLastname">
                             <Form.Label>Lastname</Form.Label>
                             <Form.Control type="text" placeholder="Enter lastname" name="lastname" 
                                 onChange = { this.props.onEditChangeHandler } defaultValue = {this.props.employees.lastname} />
-                            {this.props.errorValidation.lastnameError}
+                            <Form.Text style={{color: "red", fontWeight: "bold"}} >
+                                {this.props.errorValidation.lastnameError}
+                            </Form.Text>
                         </Form.Group>
 
                         <Form.Group controlId="formBirthdate">
                             <Form.Label>Birthdate</Form.Label>
                             <Form.Control type="date" placeholder="Enter birthdate" name="birthdate" 
                                 format="yyyy-mm-dd" onChange = { this.props.onEditChangeHandler } defaultValue = {this.props.employees.birthdate} />
-                            {this.props.errorValidation.birthdateError}
+                            <Form.Text style={{color: "red", fontWeight: "bold"}} >
+                                {this.props.errorValidation.birthdateError}
+                            </Form.Text>
                         </Form.Group>
 
                         <Form.Group controlId="formPosition">
                             <Form.Label>Position</Form.Label>
                             <Form.Control type="text" placeholder="Enter position" name="position" 
                                 onChange = { this.props.onEditChangeHandler }  defaultValue = {this.props.employees.position} />
-                            {this.props.errorValidation.positionError}
+                            <Form.Text style={{color: "red", fontWeight: "bold"}}>
+                                {this.props.errorValidation.positionError}
+                            </Form.Text>
                         </Form.Group>
                     </Form>
                 </Modal.Body>
