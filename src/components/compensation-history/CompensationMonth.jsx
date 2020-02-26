@@ -43,7 +43,9 @@ class CompensationMonth extends Component {
                     <Col>
                         <Form.Group controlId="formDate">
                             <Form.Label>Month and Year</Form.Label>
-                            <Form.Control type="month" name="date" onChange={this.props.onChangeListener} />
+                            <Form.Control type="month" name="date" onChange={this.props.onChangeListener} />                            <Form.Text style={{color: "red", fontWeight: "bold"}}>
+                                {this.props.errorMessage}
+                            </Form.Text>
                         </Form.Group>
                     </Col>
 
@@ -130,7 +132,8 @@ CompensationMonth.propTypes = {
     onSubmitMonthListener: PropTypes.func,
     compensationResult: PropTypes.array,
     totalMonthAmount: PropTypes.number,
-    compensationResultLength: PropTypes.number
+    compensationResultLength: PropTypes.number,
+    errorMessage: PropTypes.string
 }
 
 export default CompensationMonth;

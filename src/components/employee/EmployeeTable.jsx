@@ -1,16 +1,8 @@
 import React, { Component } from 'react';
-// import EmployeeTableRow from '../employee/EmployeeTableRow';
 import Button from '@material-ui/core/Button';
 import AddEmployeeModal from './AddEmployeeModal';
 import EditEmployeeModal from './EditEmployeeModal';
-// import Table from '@material-ui/core/Table';
-// import TableBody from '@material-ui/core/TableBody';
-// import TableCell from '@material-ui/core/TableCell';
-// import TableContainer from '@material-ui/core/TableContainer';
-// import TableHead from '@material-ui/core/TableHead';
-// import TableRow from '@material-ui/core/TableRow';
 import MaterialTable from 'material-table';
-// import Paper from '@material-ui/core/Paper';
 import { FaUserPlus } from "react-icons/fa";
 import axios from 'axios';
 import swal from 'sweetalert';
@@ -205,7 +197,7 @@ class EmployeeTable extends Component {
 
             if (fieldToSubmit.firstname.trim().length !== 0 && fieldToSubmit.lastname.trim().length !== 0
                 && fieldToSubmit.birthdate.trim().length !== 0 && fieldToSubmit.position.trim().length !== 0) {
-
+                    
                 axios.post('http://localhost:8080/addEmployees', fieldToSubmit)
                 .then((response) => {
                     if (response.data.status) {
@@ -224,6 +216,7 @@ class EmployeeTable extends Component {
                         );
 
                     } else {
+                        //console.log(response);
                         this.closeAddModal();
                         swal('Employee Added!', 'Employee successfully added.', 'success');
                         this.setState( { employees: response.data.employees } );

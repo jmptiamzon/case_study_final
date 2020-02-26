@@ -16,6 +16,7 @@ class CompensationHistoryContainer extends Component {
             totalRangeAmount: 0,
             compensationResultLength: 0,
             compensationRangeResultLength: 0,
+            errorMessage: '',
             componentToShow: <CompensationRange />,
             compensationResult: [],
             compensationRangeResult: [],
@@ -39,11 +40,26 @@ class CompensationHistoryContainer extends Component {
 
     handleChange = (event, newValue) => {
         if (newValue === 0) {
-            this.setState( { componentToShow: true } )
+            this.setState( 
+                { 
+                    componentToShow: true, 
+                    errorMessage: '',            
+                    compensationResult: [],
+                    compensationRangeResult: []
+
+                } 
+            )
         }
 
         if (newValue === 1) {
-            this.setState( { componentToShow: false } );
+            this.setState( 
+                { 
+                    componentToShow: false, 
+                    errorMessage: '',
+                    compensationResult: [],
+                    compensationRangeResult: []
+                } 
+            );
         }
 
         this.setState( { value: newValue } );
@@ -56,63 +72,157 @@ class CompensationHistoryContainer extends Component {
             compensationMonthData: {
                 ...prevState.compensationMonthData,
                 [name]: value
-            }
+            },
+            errorMessage: ''
         }));
+
+        const errorMessage = this.validationMonth(name, value);
+
+        if (errorMessage.trim().length !== 0) {
+            this.setState({ errorMessage: errorMessage });
+        }
     }
 
     onChangeRangeListener = e => {
         const { name, value } = e.target;
-
+  
         this.setState((prevState) => ({
             compensationRangeData: {
                 ...prevState.compensationRangeData,
                 [name]: value
-            }
+            },
+            errorMessage: ''
         }));
+
+        const errorMessage = this.validationRange(name, value);
+
+        if (errorMessage.trim().length !== 0) {
+            this.setState({ errorMessage: errorMessage });
+        }
+    }
+
+    validationMonth = (name, value) => {
+        let errorMessage = '';
+
+        if (name === 'date') {
+            if (value.trim().split('-').length < 2) {
+                errorMessage = 'Please complete the date field.';
+            }
+
+            if (value.trim().length === 0) {
+                errorMessage = 'Month field is required.'
+            }
+        }
+
+        if (name === 'id') {
+            if (value.trim().length === 0) {
+                errorMessage = 'Employee field is required.';
+            }
+        }
+
+        return errorMessage
+    }
+
+    validationRange = (name, value) => {
+        let errorMessage = '';
+
+        if (name === 'startDate' || name === 'endDate') {
+            if (value.trim().split('-').length < 2) {
+                errorMessage = 'Please complete the date field.';
+            }
+
+            if (value.trim().length === 0) {
+                errorMessage = 'Month field is required.'
+            }
+        }
+
+        if (name === 'id') {
+            if (value.trim().length === 0) {
+                errorMessage = 'Employee field is required.';
+            }
+        }
+
+        return errorMessage
+        
     }
 
     onSubmitMonthListener = () => {
+        const errorCheck = this.state.errorMessage;
+        const formToSubmit = this.state.compensationMonthData;
         let totalValue = 0;
 
-        axios.post('http://localhost:8080/getCompensationMonth', this.state.compensationMonthData)
-            .then((response) => {
-                response.data.map((result) => totalValue = result.amount + totalValue);
-                // console.log(response.data);
-                this.setState( 
-                    { 
-                        compensationResult: response.data, 
-                        totalMonthAmount: totalValue,
-                        compensationResultLength: response.data.length
-                    } 
-                );
-            })
+        if (errorCheck === '') {
+            if (formToSubmit.date.trim().length !== 0 && formToSubmit.id.trim().length !== 0) {
+                axios.post('http://localhost:8080/getCompensationMonth', formToSubmit)
+                    .then((response) => {
+                        if (response.data.status) {
+                            this.setState( { errorMessage: response.data.errorMessage } );
 
-            .catch((error) => {
-                // handle error
-            });
+                        } 
+                        
+                        else {
+                            response.data.compensationList.map((result) => totalValue = result.amount + totalValue);
+                            this.setState( 
+                                { 
+                                    compensationResult: response.data.compensationList, 
+                                    totalMonthAmount: totalValue,
+                                    compensationResultLength: response.data.compensationList.length,
+                                    errorMessage: ''
+                                } 
+                            );
+                        }
+
+                    })
+        
+                    .catch((error) => {
+                        //console.log(error);
+                        // handle error
+                    });
+            }
+        } 
     }
 
     onSubmitRangeListener = () => {
+        const errorCheck = this.state.errorMessage;
+        const formToSubmit = this.state.compensationRangeData;
         let totalValue = 0;
 
-        axios.post('http://localhost:8080/getCompensationRange', this.state.compensationRangeData)
-            .then((response) => {
-                response.data.map((result) => 
-                    totalValue = totalValue + result.amount
-                );
+        if (errorCheck === '') {
+            if (formToSubmit.startDate.trim().length !== 0 && formToSubmit.endDate.trim().length !== 0
+                && formToSubmit.id.trim().length !== 0) {
+                    axios.post('http://localhost:8080/getCompensationRange', formToSubmit)
+                    .then((response) => {
+                        
+                        if (response.data.status) {
+                            this.setState( { errorMessage: response.data.errorMessage } );
 
-                this.setState( 
-                    { 
-                        compensationRangeResult: response.data,  
-                        compensationRangeResultLength: response.data.length,
-                        totalRangeAmount: totalValue
-                    } 
-                );
-            })
+                        }
 
-            .catch((error) => {
-                //
-            });
+                        else {
+                            response.data.compensationRange.map((result) => 
+                                totalValue = totalValue + result.amount
+                            );
+        
+                            this.setState( 
+                                { 
+                                    compensationRangeResult: response.data.compensationRange,  
+                                    compensationRangeResultLength: response.data.compensationRange.length,
+                                    totalRangeAmount: totalValue,
+                                    errorMessage: ''
+                                }       
+                            );
+
+                        }
+
+                    })
+        
+                    .catch((error) => {
+                        //
+                    });
+
+            }
+        }
+
     }
 
     render() {        
@@ -139,7 +249,8 @@ class CompensationHistoryContainer extends Component {
                                 onSubmitRangeListener={this.onSubmitRangeListener} 
                                 compensationRangeResult={this.state.compensationRangeResult}
                                 totalRangeAmount={this.state.totalRangeAmount}
-                                compensationRangeResultLength={this.state.compensationRangeResultLength} /> 
+                                compensationRangeResultLength={this.state.compensationRangeResultLength}
+                                errorMessage={this.state.errorMessage} /> 
                             
                             : 
 
@@ -148,7 +259,8 @@ class CompensationHistoryContainer extends Component {
                                         onSubmitMonthListener={this.onSubmitMonthListener} 
                                         compensationResult={this.state.compensationResult} 
                                         totalMonthAmount={this.state.totalMonthAmount}
-                                        compensationResultLength={this.state.compensationResultLength} />
+                                        compensationResultLength={this.state.compensationResultLength}
+                                        errorMessage={this.state.errorMessage} />
                     }
                 </Card>
             </>

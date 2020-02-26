@@ -45,6 +45,9 @@ class CompensationRange extends Component {
                         <Form.Group controlId="formStartDate">
                             <Form.Label>Start Month and Year</Form.Label>
                             <Form.Control type="month" name="startDate" onChange={this.props.onChangeRangeListener} />
+                            <Form.Text style={{color: "red", fontWeight: "bold"}}>
+                                {this.props.errorMessage}
+                            </Form.Text>
                         </Form.Group>
                     </Col>
 
@@ -134,7 +137,8 @@ CompensationRange.propTypes = {
     onSubmitRangeListener: PropTypes.func,
     compensationRangeResult: PropTypes.array,
     totalRangeAmount: PropTypes.number,
-    compensationRangeResultLength: PropTypes.number
+    compensationRangeResultLength: PropTypes.number,
+    errorMessage: PropTypes.string
 }
 
 export default CompensationRange;

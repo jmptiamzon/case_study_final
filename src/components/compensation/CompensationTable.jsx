@@ -1,19 +1,11 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
-// import Table from '@material-ui/core/Table';
-// import TableBody from '@material-ui/core/TableBody';
-// import TableCell from '@material-ui/core/TableCell';
-// import TableContainer from '@material-ui/core/TableContainer';
-// import TableHead from '@material-ui/core/TableHead';
-// import TableRow from '@material-ui/core/TableRow';
-// import Paper from '@material-ui/core/Paper';
 import MaterialTable from 'material-table';
 import { FaMoneyBill } from "react-icons/fa";
 import axios from 'axios';
 import swal from 'sweetalert';
 import AddCompensationModal from './AddCompensationModal';
 import EditCompensationModal from './EditCompensationModal';
-// import CompensationTableRow from './CompensationTableRow';
 
 class CompensationTable extends Component {
 
@@ -87,7 +79,19 @@ class CompensationTable extends Component {
     }
 
     closeAddModal = () => {
-        this.setState( { showAddModal: false } );
+        this.setState( 
+            { 
+                showAddModal: false,
+                validationError: {
+                    comp_type_idError: '',
+                    emp_idError: '',
+                    amountError: '',
+                    descriptionError: '',
+                    dateError: '',
+                    errorMessage: ''
+                }  
+            } 
+        );
     }
 
     openEditModal = compensationData => {
@@ -106,12 +110,45 @@ class CompensationTable extends Component {
     }
 
     closeEditModal = () => {
-        this.setState( { showEditModal: false } );
+        this.setState( 
+            { 
+                showEditModal: false,
+                validationError: {
+                    comp_type_idError: '',
+                    emp_idError: '',
+                    amountError: '',
+                    descriptionError: '',
+                    dateError: '',
+                    errorMessage: ''
+                }  
+            } 
+        );
     }
 
     onAddChangeHandler = e => {
         const { name, value } = e.target;
         const errorMessage = this.validationHandler(name, value);
+        let errorTitle = '';
+
+        if (name === 'comp_type_id') {
+            errorTitle = 'Compensation type ';
+        }
+
+        if (name === 'emp_id') {
+            errorTitle = 'Employee '
+        }
+
+        if (name === 'date') {
+            errorTitle = 'Date ';
+        }
+
+        if (name === 'amount') {
+            errorTitle = 'Amount ';
+        }
+
+        if (name === 'description') {
+            errorTitle = 'Description ';
+        }
 
         if (errorMessage.length === 0) {
             this.setState((prevState) => ({
@@ -132,18 +169,38 @@ class CompensationTable extends Component {
                 validationError: {
                     ...prevState.validationError,
                     errorMessage: '',
-                    [name+'Error']: errorMessage
+                    [name+'Error']: errorTitle + errorMessage
                 }
             }));
         }
-
 
     }
 
     onEditChangeHandler = e => {
         const { name, value } = e.target;
         const errorMessage = this.validationHandler(name, value);
+        let errorTitle = '';
 
+        if (name === 'comp_type_id') {
+            errorTitle = 'Compensation type ';
+        }
+
+        if (name === 'emp_id') {
+            errorTitle = 'Employee '
+        }
+
+        if (name === 'date') {
+            errorTitle = 'Date ';
+        }
+
+        if (name === 'amount') {
+            errorTitle = 'Amount ';
+        }
+
+        if (name === 'description') {
+            errorTitle = 'Description ';
+        }
+        
         if (errorMessage.length === 0) {
             this.setState((prevState) => ({
                 compensationEditTemp: {
@@ -163,7 +220,7 @@ class CompensationTable extends Component {
                 validationError: {
                     ...prevState.validationError,
                     errorMessage: '',
-                    [name+'Error']: errorMessage
+                    [name+'Error']: errorTitle + errorMessage
                 }
             }));
         }
@@ -171,14 +228,66 @@ class CompensationTable extends Component {
 
     validationHandler = (name, value) => {
         let errorMessage = '';
+        const patternSalary = /^-?\d+(\.\d{1,2})?$/;
+        const patternExcludeSalary = /^\d+(\.\d{1,2})?$/;
         
-        if (value.trim().length === 0) {
+        if (value.trim().length === 0 && name !== 'description' && name !== 'amount') {
             errorMessage = ' field is required.';
         }
 
         if (name === 'date') {
             if (value.trim().split('-').length < 2) {
                 errorMessage = ' must be completed.';
+            }
+        }
+
+        if (this.state.compensationAddTemp.comp_type_id === '1') {
+            if (name === 'amount') {
+                if (!patternSalary.test(value)) {
+                    errorMessage = ' field contains invalid characters.';
+                }
+            }
+
+        } 
+
+        if (this.state.compensationAddTemp.comp_type_id !== '1' && this.state.compensationAddTemp.comp_type_id !== '') {
+            if (name === 'amount') {
+                if (!patternExcludeSalary.test(value)) {
+                    errorMessage = ' field contains invalid characters.';
+                }
+
+            } 
+            
+            if (name === 'description') {
+                if (value.trim().length === 0) {
+                    errorMessage = ' field is required.';
+                }
+
+            }
+        }
+        
+        if (this.state.compensationEditTemp.comp_type_id === 1) {
+            if (name === 'amount') {
+                if (!patternSalary.test(value)) {
+                    errorMessage = ' field contains invalid characters.';
+                }
+            }
+
+        } 
+        
+        if (this.state.compensationEditTemp.comp_type_id !== 1 && this.state.compensationEditTemp.comp_type_id !== '') {
+            if (name === 'amount') {
+                if (!patternExcludeSalary.test(value)) {
+                    errorMessage = ' field contains invalid characters.';
+                }
+
+            } 
+            
+            if (name === 'description'){
+                if (value.trim().length === 0) {
+                    errorMessage = ' field is required.';
+                }
+
             }
         }
 
@@ -194,8 +303,7 @@ class CompensationTable extends Component {
             errorCheck.dateError === '') {
 
             if (fieldToSubmit.emp_id.trim().length !== 0 && fieldToSubmit.comp_type_id.trim().length !== 0
-                && fieldToSubmit.amount.trim().length !== 0 && fieldToSubmit.description.trim().length !== 0
-                && fieldToSubmit.date.trim().length !== 0) {
+                && fieldToSubmit.amount.trim().length !== 0 && fieldToSubmit.date.trim().length !== 0) {
 
                     axios.post('http://localhost:8080/addCompensation', this.state.compensationAddTemp)
                     .then((response) => {
@@ -246,52 +354,50 @@ class CompensationTable extends Component {
     onEditSubmitListener = () => {
         const errorCheck = this.state.validationError;
         const fieldToSubmit = this.state.compensationEditTemp;
+        //console.log(errorCheck);
 
         if (errorCheck.amountError === '' && errorCheck.descriptionError === '' ) {
-
-            if (fieldToSubmit.description.trim().length !== 0) {
-                    axios.post('http://localhost:8080/updateCompensation', this.state.compensationEditTemp)
-                    .then((response) => {
-                        if (response.data.status) {
-                            this.setState( 
-                                {  
-                                    validationError: {
-                                        comp_type_idError: response.data.compTypeError === null ? '' : response.data.compTypeError,
-                                        emp_idError: response.data.empIdError === null ? '' : response.data.empIdError,
-                                        amountError: response.data.amountError === null ? '' : response.data.amountError,
-                                        descriptionError: response.data.descriptionError === null ? '' : response.data.descriptionError,
-                                        dateError:  response.data.dateError === null ? '' : response.data.dateError,
-                                        errorMessage: response.data.errorMessage === null ? '' : response.data.errorMessage,
-                                    },
-                                } 
-                            );
+            axios.post('http://localhost:8080/updateCompensation', fieldToSubmit)
+            .then((response) => {
+                if (response.data.status) {
+                    this.setState( 
+                        {  
+                            validationError: {
+                                comp_type_idError: response.data.compTypeError === null ? '' : response.data.compTypeError,
+                                emp_idError: response.data.empIdError === null ? '' : response.data.empIdError,
+                                amountError: response.data.amountError === null ? '' : response.data.amountError,
+                                descriptionError: response.data.descriptionError === null ? '' : response.data.descriptionError,
+                                dateError:  response.data.dateError === null ? '' : response.data.dateError,
+                                errorMessage: response.data.errorMessage === null ? '' : response.data.errorMessage,
+                            },
+                        } 
+                    );
         
-                        } else {
-                            this.setState( 
-                                {  
-                                    compensations: response.data.compensationList,
-                                    validationError: {
-                                        comp_type_idError: '',
-                                        emp_idError: '',
-                                        amountError: '',
-                                        descriptionError: '',
-                                        dateError:  '',
-                                        errorMessage: ''
-                                    }
-                                } 
-                            );
+                } else {
+                    this.setState( 
+                        {  
+                            compensations: response.data.compensationList,
+                            validationError: {
+                                comp_type_idError: '',
+                                emp_idError: '',
+                                amountError: '',
+                                descriptionError: '',
+                                dateError:  '',
+                                errorMessage: ''
+                            }
+                        } 
+                    );
                             
-                            this.closeEditModal();
-                            swal('Compensation Updated!', 'Compensation has been updated successfully.', 'success');
-                        }
+                    this.closeEditModal();
+                    swal('Compensation Updated!', 'Compensation has been updated successfully.', 'success');
+                }
         
-                    })
+            })
         
-                    .catch((error) => {
-                        //asd
-                    });
+            .catch((error) => {
+                //asd
+            });
 
-            }
 
         }
     }
