@@ -3,6 +3,7 @@ import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Card from '@material-ui/core/Card';
+import Container from '@material-ui/core/Container';
 import CompensationMonth  from '../components/compensation-history/CompensationMonth';
 import CompensationRange  from '../components/compensation-history/CompensationRange';
 import axios from 'axios';
@@ -227,7 +228,7 @@ class CompensationHistoryContainer extends Component {
 
     render() {        
         return(    
-            <>
+            <Container style={{marginTop: 30}}>
                 <Paper square>
                     <Tabs
                         value={this.state.value}
@@ -263,7 +264,7 @@ class CompensationHistoryContainer extends Component {
                                         errorMessage={this.state.errorMessage} />
                     }
                 </Card>
-            </>
+            </Container>
         );
     }
 }

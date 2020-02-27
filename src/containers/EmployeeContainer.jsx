@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import EmployeeTable from '../components/employee/EmployeeTable';
+import Container from '@material-ui/core/Container';
 
 class EmployeeContainer extends Component {
     componentDidMount() {
@@ -10,7 +11,9 @@ class EmployeeContainer extends Component {
 
     render() {
         return(
-            <EmployeeTable />
+            <Container style={{marginTop: 30}}>
+                <EmployeeTable />
+            </Container>
         );
     }
 }

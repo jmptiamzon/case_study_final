@@ -1,10 +1,12 @@
 import React from 'react';
-import PageJumbotron from '../components/home/PageJumbotron';
+import PageCarousel from '../components/home/PageCarousel';
 
 function HomeContainer() {
 
     return(
-        <PageJumbotron />
+        <>
+            <PageCarousel />
+        </>
     );
 }
 

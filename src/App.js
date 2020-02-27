@@ -5,7 +5,6 @@ import EmployeeContainer from './containers/EmployeeContainer';
 import CompensationContainer from './containers/CompensationContainer';
 import CompensationHistoryContainer from './containers/CompensationHistoryContainer';
 import Header from './components/Header';
-import Container from '@material-ui/core/Container';
 
 import {
   BrowserRouter as Router,
@@ -19,14 +18,12 @@ function App() {
     <Router>
       <Header />
 
-        <Container style = {{marginTop: 30}}>
           <Switch>
             <Route exact path = "/" component = { HomeContainer } />
             <Route path = "/employee" component = { EmployeeContainer } />
             <Route path = "/compensation" component = { CompensationContainer } />
             <Route path = "/compensation-history" component = { CompensationHistoryContainer } />
           </Switch>
-        </Container>
 
 
     </Router>

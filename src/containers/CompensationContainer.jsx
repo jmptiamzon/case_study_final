@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import CompensationTable from '../components/compensation/CompensationTable';
+import Container from '@material-ui/core/Container';
 
 
 class CompensationContainer extends Component {
@@ -11,7 +12,9 @@ class CompensationContainer extends Component {
     
     render() {
         return(
-            <CompensationTable />
+            <Container style={{marginTop: 30}}>
+                <CompensationTable />
+            </Container>
         );
     }
 }
