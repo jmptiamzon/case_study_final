@@ -5,8 +5,12 @@ import Nav from 'react-bootstrap/Nav';
 import LoginModal from './home/LoginModal';
 import Button from 'react-bootstrap/Button';
 import swal from 'sweetalert';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
 import { IoIosLogIn, IoIosLogOut } from 'react-icons/io';
 import { Link, withRouter } from 'react-router-dom';
+
+const END_POINT_URL = 'http://localhost:8080/';
 
 class Header extends Component {
     constructor(props) {
@@ -17,6 +21,7 @@ class Header extends Component {
                 email: '',
                 password: ''
             },
+            openAlert: false,
             loginError: false,
             modalState: false,
             errorTextState: false,
@@ -51,6 +56,10 @@ class Header extends Component {
         this.setState( { modalState: true } );
     }
 
+    alertClose = () => {
+        this.setState( { openAlert: false } );
+    }
+
     onChangeHandler = e => {
         const { name, value } = e.target;
 
@@ -65,7 +74,7 @@ class Header extends Component {
     onSubmitListener = () => {
         const axios = require('axios');
 
-        axios.post('http://localhost:8080/login', this.state.userCredentials)
+        axios.post(END_POINT_URL + 'login', this.state.userCredentials)
             .then(response => {
                 if (response.data.status) {
                     this.setState( 
@@ -80,6 +89,7 @@ class Header extends Component {
                         } 
                     );
                     sessionStorage.setItem('user_cred', this.state.userCredentials);
+                    this.setState( { openAlert: true } );
                     // add localStorage here
 
                 } else {
@@ -121,6 +131,9 @@ class Header extends Component {
     }
 
     render() {
+        const vertical = 'bottom';
+        const horizontal = 'right';
+
         return(
             <>
                 <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
@@ -147,6 +160,19 @@ class Header extends Component {
                     onSubmitListener = { this.onSubmitListener }
                     loginError = { this.state.loginError }
                 />
+
+                <Snackbar 
+                    anchorOrigin={{ vertical, horizontal }}
+                    key={`${vertical}, ${horizontal}`}
+                    open={this.state.openAlert} 
+                    autoHideDuration={6000} 
+                    onClose={this.alertClose} >
+
+                    <Alert onClose={this.alertClose} severity="success">
+                        User successfully logged in!
+                    </Alert>
+
+                </Snackbar>
             </>
         );
     }

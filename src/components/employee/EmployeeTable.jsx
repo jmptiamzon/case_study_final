@@ -326,7 +326,6 @@ class EmployeeTable extends Component {
                 
                 <MaterialTable
                     title="Employees"
-                    style={{marginBottom: "10vh"}}
                     columns={[
                         { title: 'ID', field: 'id' },
                         { title: 'Firstname', field: 'firstname' },
