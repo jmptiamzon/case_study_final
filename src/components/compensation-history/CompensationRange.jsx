@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import axios from 'axios';
 import Form from 'react-bootstrap/Form';
 import Button from '@material-ui/core/Button';
@@ -15,6 +15,8 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
 
+const END_POINT_URL = 'http://localhost:8081/';
+
 class CompensationRange extends Component {
     constructor(props) {
         super(props);
@@ -24,8 +26,8 @@ class CompensationRange extends Component {
         };
     }
 
-    async componentDidMount() {
-        await axios.get('http://localhost:8080/getEmployees')
+    componentDidMount() {
+        axios.get(END_POINT_URL + 'getEmployees')
             .then((response) => {
                 this.setState( { employees: response.data } );
             })
@@ -100,14 +102,34 @@ class CompensationRange extends Component {
 
                                 <TableBody>
                                     {this.props.compensationRangeResultLength !== 0 ? (
-                                        this.props.compensationRangeResult.map((result) => {
-                                            return(
-                                                <TableRow key={result.id}>
-                                                    <TableCell>{result.month}{' '}{result.year}</TableCell>
-                                                    <TableCell>{result.amount}</TableCell>
-                                                </TableRow>
-                                            );
-                                        })
+                                        Object.keys(this.props.compensationRangeResult.compensationRange).map((key, i) => 
+                                            this.props.compensationRangeResult.compensationRange[key].map((result, ctr, arr) => {
+                                                if (arr.length - 1 === ctr) {
+                                                    return(
+                                                        <Fragment key={key}>
+                                                            <TableRow key={result.id}>
+                                                                <TableCell>{result.month}{' '}{result.year}</TableCell>
+                                                                <TableCell>{result.amount}</TableCell>
+                                                            </TableRow>
+
+                                                            <TableRow key={key + '_final'}>
+                                                                <TableCell><b>Total</b></TableCell>
+                                                                <TableCell><b>{this.props.compensationRangeResult.totalAmountYear[key]}</b></TableCell>
+                                                            </TableRow>
+                                                        </Fragment>
+                                                    );
+
+                                                } else {
+                                                    return(
+                                                        <TableRow key={result.id}>
+                                                            <TableCell>{result.month}{' '}{result.year}</TableCell>
+                                                            <TableCell>{result.amount}</TableCell>
+                                                        </TableRow>
+                                                    );
+                                                }
+                                                
+                                            })
+                                        )
                                     )
                                     :
                                     (
@@ -116,11 +138,6 @@ class CompensationRange extends Component {
                                         </TableRow>
                                     )
                                     }
-
-                                    <TableRow>
-                                        <TableCell>Total</TableCell>
-                                        <TableCell>{this.props.totalRangeAmount}</TableCell>
-                                    </TableRow>
                                 </TableBody>
                             </Table>
                         </TableContainer>  
@@ -135,7 +152,10 @@ class CompensationRange extends Component {
 CompensationRange.propTypes = {
     onChangeRangeListener: PropTypes.func,
     onSubmitRangeListener: PropTypes.func,
-    compensationRangeResult: PropTypes.array,
+    compensationRangeResult: PropTypes.oneOfType([
+        PropTypes.array,
+        PropTypes.object
+    ]),
     totalRangeAmount: PropTypes.number,
     compensationRangeResultLength: PropTypes.number,
     errorMessage: PropTypes.string

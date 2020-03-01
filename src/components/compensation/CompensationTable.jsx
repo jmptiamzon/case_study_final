@@ -7,6 +7,8 @@ import swal from 'sweetalert';
 import AddCompensationModal from './AddCompensationModal';
 import EditCompensationModal from './EditCompensationModal';
 
+const END_POINT_URL = 'http://localhost:8081/';
+
 class CompensationTable extends Component {
 
     constructor(props) {
@@ -45,8 +47,8 @@ class CompensationTable extends Component {
         };
     }
 
-    async componentDidMount() {
-        await axios.get('http://localhost:8080/getCompensation')
+    componentDidMount() {
+        axios.get(END_POINT_URL + 'getCompensation')
             .then((response) => {
                 this.setState( { compensations: response.data.compensationList, isLoading: false } );
             })
@@ -55,7 +57,7 @@ class CompensationTable extends Component {
                 // handle error here
             });
 
-        await axios.get('http://localhost:8080/getEmployees')
+        axios.get(END_POINT_URL + 'getEmployees')
             .then((response) => {
                 this.setState( { employees: response.data } );
             })
@@ -64,7 +66,7 @@ class CompensationTable extends Component {
                 // handle error
             });
 
-        await axios.get('http://localhost:8080/getCompensationType')
+        axios.get(END_POINT_URL + 'getCompensationType')
             .then((response) => {
                 this.setState( { compensationTypes: response.data } )
             })
@@ -305,7 +307,7 @@ class CompensationTable extends Component {
             if (fieldToSubmit.emp_id.trim().length !== 0 && fieldToSubmit.comp_type_id.trim().length !== 0
                 && fieldToSubmit.amount.trim().length !== 0 && fieldToSubmit.date.trim().length !== 0) {
 
-                    axios.post('http://localhost:8080/addCompensation', this.state.compensationAddTemp)
+                    axios.post(END_POINT_URL + 'addCompensation', this.state.compensationAddTemp)
                     .then((response) => {
                         if (response.data.status) {
                             this.setState( 
@@ -345,6 +347,15 @@ class CompensationTable extends Component {
                     .catch((error) => {
                         // error handler
                     });
+
+            } else {
+                this.setState((prevState) => ({
+                    validationError: {
+                        ...prevState.validationError,
+                        errorMessage: 'Please fill-up every field before you submit.'
+                    },  
+                }));
+
             }
             
         }
@@ -357,7 +368,7 @@ class CompensationTable extends Component {
         //console.log(errorCheck);
 
         if (errorCheck.amountError === '' && errorCheck.descriptionError === '' ) {
-            axios.post('http://localhost:8080/updateCompensation', fieldToSubmit)
+            axios.post(END_POINT_URL + 'updateCompensation', fieldToSubmit)
             .then((response) => {
                 if (response.data.status) {
                     this.setState( 
@@ -412,7 +423,7 @@ class CompensationTable extends Component {
           })
           .then((willDelete) => {
             if (willDelete) {
-                axios.get('http://localhost:8080/removeCompensation/' + id)
+                axios.get(END_POINT_URL + 'removeCompensation/' + id)
                     .then((response) => { 
                         swal('Compensation Removed!', 'Compensation successfully removed.', 'success');
                         this.setState( { compensations: response.data.compensationList } );
@@ -445,9 +456,9 @@ class CompensationTable extends Component {
                         data={this.state.compensations}        
                         actions={[
                             {
-                            icon: 'edit',
-                            tooltip: 'Edit Compensation',
-                            onClick: (event, rowData) => this.openEditModal(rowData)
+                                icon: 'edit',
+                                tooltip: 'Edit Compensation',
+                                onClick: (event, rowData) => this.openEditModal(rowData)
                             },
                             {
                                 icon: 'delete',
@@ -456,6 +467,8 @@ class CompensationTable extends Component {
                             }
                         ]}
                         options={{
+                            exportButton: true,
+                            exportFileName: 'Compensation_Table_' + new Date(),
                             actionsColumnIndex: -1
                         }}
                 />

@@ -7,6 +7,7 @@ import { FaUserPlus } from "react-icons/fa";
 import axios from 'axios';
 import swal from 'sweetalert';
 
+const END_POINT_URL = 'http://localhost:8081/';
 
 class EmployeeTable extends Component {
     constructor(props) {
@@ -43,8 +44,8 @@ class EmployeeTable extends Component {
         };
     }
 
-    async componentDidMount() {
-        await axios.get('http://localhost:8080/getEmployees')
+    componentDidMount() {
+        axios.get(END_POINT_URL + 'getEmployees')
             .then((response) => {
                 this.setState( { isLoading: false, employees: response.data } );
             })
@@ -198,7 +199,7 @@ class EmployeeTable extends Component {
             if (fieldToSubmit.firstname.trim().length !== 0 && fieldToSubmit.lastname.trim().length !== 0
                 && fieldToSubmit.birthdate.trim().length !== 0 && fieldToSubmit.position.trim().length !== 0) {
                     
-                axios.post('http://localhost:8080/addEmployees', fieldToSubmit)
+                axios.post(END_POINT_URL + 'addEmployees', fieldToSubmit)
                 .then((response) => {
                     if (response.data.status) {
 
@@ -233,7 +234,7 @@ class EmployeeTable extends Component {
                 this.setState((prevState) => ({
                     errorValidation: {
                         ...prevState.errorValidation,
-                        formEmptyMessage: <h6 style={{ color: "red", fontWeight: "bold" }}>Can't submit an empty form.</h6> 
+                        formEmptyMessage: 'Please fill-up every field before you submit.'
                     }
                 }));
 
@@ -254,7 +255,7 @@ class EmployeeTable extends Component {
             if (fieldToSubmit.firstname.trim().length !== 0 && fieldToSubmit.lastname.trim().length !== 0
                 && fieldToSubmit.birthdate.trim().length !== 0 && fieldToSubmit.position.trim().length !== 0) {
                     
-                axios.post('http://localhost:8080/updateEmployees', fieldToSubmit)
+                axios.post(END_POINT_URL + 'updateEmployees', fieldToSubmit)
                 .then((response) => {
                     if (response.data.status) {
                         this.setState( 
@@ -304,7 +305,7 @@ class EmployeeTable extends Component {
           })
           .then((willDelete) => {
             if (willDelete) {
-                axios.get('http://localhost:8080/removeEmployees/' + id)
+                axios.get(END_POINT_URL + 'removeEmployees/' + id)
                     .then((response) => { 
                         swal('Employee Removed!', 'Employee successfully removed.', 'success');
                         this.setState( { employees: response.data.body } );
@@ -337,9 +338,9 @@ class EmployeeTable extends Component {
                     data={this.state.employees}        
                     actions={[
                         {
-                        icon: 'edit',
-                        tooltip: 'Edit Emplyoee',
-                        onClick: (event, rowData) => this.openEditModal(rowData)
+                            icon: 'edit',
+                            tooltip: 'Edit Emplyoee',
+                            onClick: (event, rowData) => this.openEditModal(rowData)
                         },
                         {
                             icon: 'delete',
@@ -348,6 +349,8 @@ class EmployeeTable extends Component {
                         }
                     ]}
                     options={{
+                        exportButton: true,
+                        exportFileName: 'Employee_Table_' + new Date(),
                         actionsColumnIndex: -1
                     }}
                 />

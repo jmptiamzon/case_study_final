@@ -14,6 +14,7 @@ class CompensationContainer extends Component {
         return(
             <Container style={{marginTop: 30}}>
                 <CompensationTable />
+                <br></br>
             </Container>
         );
     }

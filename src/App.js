@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import Page404 from './components/404';
 import HomeContainer from './containers/HomeContainer';
 import EmployeeContainer from './containers/EmployeeContainer';
 import CompensationContainer from './containers/CompensationContainer';
@@ -23,6 +24,7 @@ function App() {
             <Route path = "/employee" component = { EmployeeContainer } />
             <Route path = "/compensation" component = { CompensationContainer } />
             <Route path = "/compensation-history" component = { CompensationHistoryContainer } />
+            <Route component = { Page404 } />
           </Switch>
 
 

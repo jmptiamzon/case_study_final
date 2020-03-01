@@ -26,6 +26,12 @@ class EditEmployeeModal extends Component {
                         <h6 style={{color: "red", fontWeight: "bold"}} >
                             {this.props.errorValidation.formEmptyMessage}
                         </h6>
+                        
+                        <Form.Group controlId="formId">
+                            <Form.Label>ID</Form.Label>
+                            <Form.Control type="text" name="id" defaultValue = {this.props.employees.id} disabled />
+                        </Form.Group>
+
                         <Form.Group controlId="formFirstname">
                             <Form.Label>Firstname</Form.Label>
                             <Form.Control type="text" placeholder="Enter firstname" name="firstname" 

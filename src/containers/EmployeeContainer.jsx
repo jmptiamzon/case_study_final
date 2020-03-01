@@ -13,6 +13,7 @@ class EmployeeContainer extends Component {
         return(
             <Container style={{marginTop: 30}}>
                 <EmployeeTable />
+                <br></br>
             </Container>
         );
     }

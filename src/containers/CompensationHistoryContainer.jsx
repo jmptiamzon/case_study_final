@@ -8,6 +8,8 @@ import CompensationMonth  from '../components/compensation-history/CompensationM
 import CompensationRange  from '../components/compensation-history/CompensationRange';
 import axios from 'axios';
 
+const END_POINT_URL = 'http://localhost:8081/';
+
 class CompensationHistoryContainer extends Component {
     constructor(props) {
         super(props);
@@ -154,7 +156,7 @@ class CompensationHistoryContainer extends Component {
 
         if (errorCheck === '') {
             if (formToSubmit.date.trim().length !== 0 && formToSubmit.id.trim().length !== 0) {
-                axios.post('http://localhost:8080/getCompensationMonth', formToSubmit)
+                axios.post(END_POINT_URL + 'getCompensationMonth', formToSubmit)
                     .then((response) => {
                         if (response.data.status) {
                             this.setState( { errorMessage: response.data.errorMessage } );
@@ -179,7 +181,11 @@ class CompensationHistoryContainer extends Component {
                         //console.log(error);
                         // handle error
                     });
+
+            } else {
+                this.setState( { errorMessage: 'Please fill-up the fields.' } );
             }
+
         } 
     }
 
@@ -191,22 +197,29 @@ class CompensationHistoryContainer extends Component {
         if (errorCheck === '') {
             if (formToSubmit.startDate.trim().length !== 0 && formToSubmit.endDate.trim().length !== 0
                 && formToSubmit.id.trim().length !== 0) {
-                    axios.post('http://localhost:8080/getCompensationRange', formToSubmit)
+                    axios.post(END_POINT_URL + 'getCompensationRange', formToSubmit)
                     .then((response) => {
+                        /*Object.keys(response.data.compensationRange).map((key, i) => 
+                            response.data.compensationRange[key].map((result) => console.log(result.id))
                         
+                        );*/
+                        
+
+                        console.log(response);
+                        //console.log(response.data.compensationRange['2020']);
                         if (response.data.status) {
                             this.setState( { errorMessage: response.data.errorMessage } );
 
                         }
 
-                        else {
+                        else {/*
                             response.data.compensationRange.map((result) => 
                                 totalValue = totalValue + result.amount
-                            );
+                            );*/
         
                             this.setState( 
                                 { 
-                                    compensationRangeResult: response.data.compensationRange,  
+                                    compensationRangeResult: response.data,  
                                     compensationRangeResultLength: response.data.compensationRange.length,
                                     totalRangeAmount: totalValue,
                                     errorMessage: ''
@@ -221,7 +234,11 @@ class CompensationHistoryContainer extends Component {
                         //
                     });
 
+            } else {
+                this.setState( { errorMessage: 'Please fill-up the fields.' } );
             }
+
+
         }
 
     }

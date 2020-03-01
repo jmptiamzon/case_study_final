@@ -15,6 +15,8 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
 
+const END_POINT_URL = 'http://localhost:8081/';
+
 class CompensationMonth extends Component {
     constructor(props) {
         super(props);
@@ -24,8 +26,8 @@ class CompensationMonth extends Component {
         }
     }
     
-    async componentDidMount() {
-        await axios.get('http://localhost:8080/getEmployees')
+    componentDidMount() {
+        axios.get(END_POINT_URL + 'getEmployees')
                 .then((response) => {
                     this.setState( { employees: response.data } );
                 })
